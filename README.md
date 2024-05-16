@@ -1,5 +1,8 @@
-
 # Matchmaking.Live
+
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Node.js CI](https://github.com/your-username/matchmaking.live/workflows/Node.js%20CI/badge.svg)
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 
 ## Overview
 Matchmaking.Live is a comprehensive application designed for event management and matchmaking. This project includes functionalities for event searching, user authentication, and admin dashboard management.
