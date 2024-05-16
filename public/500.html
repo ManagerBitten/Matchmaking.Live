@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>500 Internal Server Error</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #0a0a0a, #111);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+      text-align: center;
+      animation: fadeIn 2s ease-in-out;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 8em;
+      margin: 0;
+      line-height: 1.2;
+      color: #ffff00;
+      text-shadow: 0 0 10px rgba(255, 255, 0, 0.8), 0 0 20px rgba(231, 76, 60, 0.4);
+      animation: neonGlow 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes neonGlow {
+      0% {
+        text-shadow: 0 0 10px rgba(255, 255, 0, 0.4), 0 0 20px rgba(255, 255, 0, 0.2);
+      }
+      100% {
+        text-shadow: 0 0 10px rgba(255, 255, 0, 0.8), 0 0 20px rgba(255, 255, 0, 0.4);
+      }
+    }
+
+    p {
+      font-size: 1.5em;
+      margin-top: .5em;
+      color: #a4b0be;
+    }
+
+    a {
+      color: #e74c3c;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: scale(.8);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Additional Fancy Background Effects */
+
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .gradient-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4));
+      z-index: -1;
+      animation: gradientMotion 5s linear infinite;
+    }
+
+    @keyframes gradientMotion {
+      0% {
+        background-position: 0% 50%;
+      }
+      100% {
+        background-position: 100% 50%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>500</h1>
+    <p>Internal Server Error</p>
+  </div>
+  <div id="particles-js" class="particles"></div>
+  <div class="gradient-overlay"></div>
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script>
+      particlesJS("particles-js", {
+          particles: {
+              number: { value: 80, density: { enable: true, value_area: 800 } },
+              color: { value: ["#e74c3c", "#3498db", "#2ecc71", "#e67e22", "#9b59b6"] },
+              shape: { type: ["circle", "triangle", "polygon", "star", "edge"], stroke: { width: 0, color: "#000000" }, polygon: { nb_sides: 5 } },
+              opacity: { value: 0.5, random: false, anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false } },
+              size: { value: 3, random: true, anim: { enable: true, speed: 3, size_min: 0.1, sync: false } },
+              line_linked: { enable: true, distance: 150, color: "#e74c3c", opacity: 0.4, width: 1 },
+              move: { enable: true, speed: 6, direction: "none", random: false, straight: false, out_mode: "out", bounce: false, attract: { enable: false, rotateX: 600, rotateY: 1200 } }
+          },
+          interactivity: {
+              detect_on: "canvas",
+              events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }, resize: true },
+              modes: { grab: { distance: 400, line_linked: { opacity: 1 } }, bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 }, repulse: { distance: 200, duration: 0.4 }, push: { particles_nb: 4 }, remove: { particles_nb: 2 } }
+          },
+          retina_detect: true
+      });
+  </script>
+</body>
+</html>

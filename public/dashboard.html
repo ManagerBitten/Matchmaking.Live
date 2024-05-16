@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matchmaking Staff Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: #fff;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 15px;
+      text-align: center;
+    }
+
+    nav {
+      background-color: #444;
+      padding: 10px;
+      text-align: center;
+      display: flex;
+      justify-content: center; 
+      align-items: center; 
+    }
+
+    .nav-links {
+      display: flex;
+    }
+
+    nav a {
+      margin: 10px;
+      text-decoration: none;
+      color: #fff;
+      font-weight: bold;
+      transition: color 0.3s ease-in-out;
+      display: inline-block;
+    }
+
+
+    nav a:hover {
+      color: #ff5555; /* Red color for hover effect */
+    }
+
+    section {
+      padding: 20px;
+    }
+
+    .dashboard-options {
+      display: flex;
+      flex-wrap: wrap; /* Allow wrapping to the next line */
+      justify-content: space-around;
+    }
+
+    .dashboard-option {
+      flex: 0 0 calc(33.33% - 20px); /* 33.33% width with 20px margin */
+      box-sizing: border-box; /* Include padding and border in the width calculation */
+      text-align: center;
+      padding: 20px;
+      margin: 10px;
+      border: 1px solid #555;
+      border-radius: 10px;
+      background-color: #333;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    h2 {
+      color: #ff5555; /* Red color for headers */
+    }
+
+    .dashboard-option button {
+      background-color: #ff5555;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease-in-out;
+    }
+
+    .dashboard-option button:hover {
+      background-color: #cc0000; /* Darker red for hover effect */
+    }
+
+    .user-info {
+      margin: 10px;
+      text-decoration: none;
+      color: #fff;
+      font-weight: bold;
+      transition: color 0.3s ease-in-out;
+      text-align: center;
+      margin-left: auto;
+    }
+
+    .button-link {
+      background-color: #ff5555;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease-in-out;
+      text-decoration: none;
+      display: inline-block; /* To allow padding and other spacing properties */
+    }
+
+    .button-link:hover {
+      background-color: #cc0000;
+    }
+
+    @media only screen and (max-width: 768px) {
+      body {
+          font-size: 14px; /* Smaller font size */
+      }
+
+      .hide-mobile {
+        display: none;
+      }
+
+      .nav-links {
+        display: flex;
+        width: 50%;
+      }
+
+      h1 {
+          font-size: 1.5em; /* Larger headers for mobile */
+      }
+
+      .login-container, .dashboard-option, .search-box, .event, .account-details {
+          width: 90%; /* Full width for mobile */
+          margin: 5 auto; /* Center align */
+      }
+
+      nav a, .dashboard-link, .search-button, .button-link, .modal-button {
+          font-size: 1em; /* Larger font for links and buttons */
+      }
+
+      /* Adjust navigation for mobile */
+      nav {
+          flex-direction: row;
+      }
+
+      nav .user-info {
+          flex-direction: column;
+          align-items: center; /* Center align items */
+      }
+
+      /* Hide particles on mobile for performance */
+      #particles-js {
+          display: none;
+      }
+
+      /* Adjust modal for mobile */
+      .modal-content {
+          width: 95%; /* Use most of the screen width */
+      }
+
+      .dashboard-options {
+        flex-direction: column;
+        flex-wrap: wrap; /* Allow wrapping to the next line */
+        justify-content: space-around;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Matchmaking Staff Dashboard</h1>
+  </header>
+
+  <nav>
+    <a href="/lookup-account" class="hide-mobile">Lookup Account</a>
+    <a href="/event-viewer" class="hide-mobile">Event Viewer</a>
+    <div class="user-info">
+      <div>
+        Welcome!<br><%= username %></div>
+      <div>
+        <a href="/logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <section>
+    <div class="dashboard-options">
+      <div class="dashboard-option">
+        <h2>Lookup Account</h2>
+        <a href="/lookup-account" class="button-link">Lookup Account</a>
+      </div>
+
+      <div class="dashboard-option">
+        <h2>Event Viewer</h2>
+        <a href="/event-viewer" class="button-link">Event Viewer</a>
+      </div>
+    </div>  
+  </section>
+
+  <div id="particles-js" class="particles"></div>
+  <div class="gradient-overlay"></div>
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script>
+      particlesJS("particles-js", {
+          particles: {
+              number: { value: 80, density: { enable: true, value_area: 800 } },
+              color: { value: ["#e74c3c", "#3498db", "#2ecc71", "#e67e22", "#9b59b6"] },
+              shape: { type: ["circle", "triangle", "polygon", "star", "edge"], stroke: { width: 0, color: "#000000" }, polygon: { nb_sides: 5 } },
+              opacity: { value: 0.5, random: false, anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false } },
+              size: { value: 3, random: true, anim: { enable: true, speed: 3, size_min: 0.1, sync: false } },
+              line_linked: { enable: true, distance: 150, color: "#e74c3c", opacity: 0.4, width: 1 },
+              move: { enable: true, speed: 6, direction: "none", random: false, straight: false, out_mode: "out", bounce: false, attract: { enable: false, rotateX: 600, rotateY: 1200 } }
+          },
+          interactivity: {
+              detect_on: "canvas",
+              events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }, resize: true },
+              modes: { grab: { distance: 400, line_linked: { opacity: 1 } }, bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 }, repulse: { distance: 200, duration: 0.4 }, push: { particles_nb: 4 }, remove: { particles_nb: 2 } }
+          },
+          retina_detect: true
+      });
+  </script>
+
+</body>
+</html>

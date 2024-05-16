@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lookup Account</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui/1.12.1/jquery-ui.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    nav {
+      background-color: #333;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav .event-viewer {
+      color: #e74c3c;
+      font-weight: bold;
+      font-size: 24px;
+    }
+
+    nav .dashboard-link {
+      color: #fff;
+      font-weight: bold;
+      font-size: 18px;
+      text-decoration: none;
+      transition: color 0.3s ease-in-out;
+    }
+
+    nav .dashboard-link:hover {
+      color: #e74c3c;
+    }
+
+    .content {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search-box {
+      display: flex;
+      margin-top: 20px; /* Space above the search box */
+    }
+
+    .search-input {
+      padding: 0 20px;
+      font-size: 16px;
+      border: 2px solid #555; /* Added border to match button's visual height */
+      outline: none;
+      background-color: #222;
+      color: #fff;
+      border-radius: 22px 0 0 22px; /* Slightly less rounded to accommodate border */
+      height: 40px; /* Adjusted height */
+      border-right: none; /* Seamless transition to button */
+    }
+
+    .search-button {
+      padding: 0 20px;
+      background-color: #e74c3c;
+      color: #fff;
+      border: 2px solid #555; /* Same border as input for consistent appearance */
+      outline: none;
+      cursor: pointer;
+      border-radius: 0 22px 22px 0; /* Matching border-radius with the input */
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+      height: 44px; /* 40px height + 2px border top + 2px border bottom */
+      box-shadow: none; /* Removed shadow for flat design */
+      border-left: none; /* Seamless transition from input */
+    }
+
+    /* Hide scrollbar for Firefox */
+    .account-details::-webkit-scrollbar {
+      width: 0;
+    }
+
+    /* Optional: Add custom styling to the scrollbar track and thumb */
+    .account-details::-webkit-scrollbar-track {
+      background: transparent;  /* Optional: Change scrollbar track color */
+    }
+
+    .account-details::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0);  /* Optional: Change scrollbar thumb color */
+    }
+
+    /* Styles for individual event entries */
+    .event {
+      background-color: #222;
+      color: #fff;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    /* Styles for the 'No results found' message */
+    .no-results {
+      color: #e74c3c;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .search-button:hover {
+      background-color: #c0392b;
+    }
+
+    /* Particles.js container */
+    #particles-js {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .account-details {
+      display: none;
+      max-height: 600px; /* Adjust based on your preference */
+      overflow-y: auto; /* Enables vertical scrolling */
+      overflow-x: hidden; /* Prevents horizontal scrolling */
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 5px;
+      width: calc(60% - 40px);
+      box-sizing: border-box;
+      display: none; /* Initially hidden */
+      display: flex;
+      justify-content: space-evenly;
+      flex-wrap: wrap;
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    }
+
+    .player-info, .game-stats, .season-stats {
+      margin: 10px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      width: 300px; /* Adjust as needed */
+    }
+
+    .player-avatar {
+      width: 100px; /* Adjust as needed */
+      height: 100px; /* Adjust as needed */
+      border-radius: 50%;
+    }
+
+    .collapsible-section {
+      background-color: #222;
+      color: #fff;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+
+    .collapsible-header {
+      padding: 10px;
+      cursor: pointer;
+      border-bottom: 1px solid #555;
+      text-align: center;
+    }
+
+    .collapsible-content {
+      display: none;
+      padding: 10px;
+    }
+
+    .detail-item {
+      margin-bottom: 5px; 
+    }
+
+    .discord-avatar, .discord-banner {
+      width: 100px;
+      height: auto;
+      display: block;
+      margin-top: 5px;
+    }
+
+    .spinner {
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top: 4px solid #e74c3c; /* Spinner color */
+        border-radius: 50%;
+        width: 40px; /* Spinner size */
+        height: 40px; /* Spinner size */
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .spinner-message {
+        color: #fff;
+        text-align: center;
+        font-size: 1.5em; /* Larger font for the message */
+        margin-top: 5px; /* Closer to the spinner */
+    }
+
+    .card {
+      width: 100%;
+      background: #23272A;;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-image {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      background: blur;
+    }
+
+    .header {
+      background: #ffffff;
+    }
+
+    .profile {
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      background: #23272A;
+    }
+
+    .profile-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 4px solid #ffffff;;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      /* Adding some shadow to the avatar */
+      position: absolute;
+      top: -40px;
+      left: calc(50% - 40px);
+    }
+
+    .username {
+      margin-top: 40px;
+      color: #ffffff;
+      font-weight: bold;
+      padding-left: 10px;
+    }
+
+    .id {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.9em;
+      padding-left: 10px;
+    }
+
+    .profile-id {
+      background-color: #494a4b;
+      border-radius: 3px;
+      font-family: monospace;
+      padding: 2px;
+      color: #CDD9E5;
+      font-size: 1em;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .info {
+      background: #23272A;
+      padding: 15px 20px;
+      font-size: 0.8em;
+    }
+
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      padding: 10px 0;
+      /* More padding for each info item */
+      border-bottom: 1px solid #e0e0e0;
+      /* Separator */
+    }
+
+    .info-title {
+      color: #888;
+    }
+
+    .info-value {
+      color: #333;
+      font-weight: bold;
+    }
+
+    .info-item:last-child {
+      margin-bottom: 0;
+      border-bottom: none;
+    }
+
+    /* Add these styles to your existing CSS */
+
+    /* Align 'No Past Names Found' to the left */
+    .info-item.names {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start; /* Align to the left */
+    }
+
+    /* Align 'No Past Accounts Found' to the center */
+    .info-item.accounts {
+      display: flex;
+      align-items: center;
+      justify-content: center; /* Align to the center */
+    }
+
+    /* If you are using a class to apply to the paragraph or div that contains 'No Past Names Found' */
+    .no-names-found {
+      text-align: left; /* Align text to the left */
+      width: 100%; /* Take full width to respect the text alignment */
+    }
+
+    /* Similar class for 'No Past Accounts Found' */
+    .no-accounts-found {
+      text-align: center; /* Center the text */
+      width: 100%; /* Take full width to respect the text alignment */
+    }
+
+
+    code {
+        background-color: #494a4b; /* Dark background color */
+        border-radius: 3px;
+        font-family: monospace;
+        padding: 2px 4px;
+        color: #CDD9E5; /* Light text color for readability */
+        font-size: 1em;
+        display: inline-block; /* Optional: Use block for a different effect */
+    }
+
+    /* Add styles for list elements if needed */
+    .discord-about-me ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .discord-about-me ul li {
+      margin-bottom: 5px;
+    }
+
+    .discord-about-me ul li code {
+      /* Inline-block allows it to only take up as much width as needed */
+      display: inline-block;
+    }
+
+    /* Modal styles */
+    .modal {
+        display: none; 
+        position: fixed; 
+        z-index: 1050; /* Ensure it's above most other content */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%; 
+        overflow: auto; 
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+        background-color: #23272A;
+        margin: 10% auto; /* Center it vertically in the viewport */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%; /* Adjust width for sleek design */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Soft shadow for depth */
+        border-radius: 10px; /* Rounded corners */
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover, .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* Styling for when the modal is active */
+    .modal.show {
+        opacity: 1;
+        transition: opacity 0.25s ease;
+    }
+
+    .modal-content.show {
+        transform: scale(1);
+        transition: transform 0.25s ease;
+    }
+
+
+    /* Add this to your CSS */
+    .modal-button {
+      background-color: #ff5555; /* Button Color */
+      color: white; /* Text Color */
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      outline: none;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      font-size: 0.9em;
+      font-weight: bold;
+    }
+
+    /* Style for disabled buttons */
+    .modal-button.disabled {
+        background-color: #cccccc; /* Light gray background */
+        color: #666666; /* Darker gray text */
+        cursor: not-allowed; /* Change cursor to indicate the button is disabled */
+        box-shadow: none; /* No shadow for disabled buttons */
+    }
+
+    /* Optionally: Remove the hover effects for disabled buttons */
+    .modal-button.disabled:hover,
+    .modal-button.disabled:focus,
+    .modal-button.disabled:active {
+        background-color: #cccccc;
+        box-shadow: none;
+    }
+    
+    .modal-button:hover,
+    .modal-button:focus {
+      background-color: #cc0000; /* Darker shade for hover/focus */
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-button:active {
+      transform: translateY(2px); /* Button press effect */
+      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Create a new container for the buttons */
+    .info-buttons-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px; /* Add some space above the buttons */
+    }
+
+    .modal-button {
+        flex: 1; /* Give buttons equal space */
+        margin: 0 5px; /* Add margin between buttons */
+    }
+
+    /* First button should stick to the left */
+    .modal-button:first-child {
+        margin-left: 0;
+    }
+
+    /* Last button should stick to the right */
+    .modal-button:last-child {
+        margin-right: 0;
+    }
+
+    .buttons-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px; /* Or any other value for spacing */
+    }
+
+    #modal-title {
+      text-align: center; /* Center the title text */
+      margin: 0; /* Adjust or remove margin as needed */
+      padding-bottom: 10px; /* Space below the title */
+      border-bottom: 1px solid #444; /* Line under the title */
+    }
+
+    /* Style for the modal list to improve its appearance */
+    #modal-list {
+      list-style-type: none; /* Removing the default list bullet */
+      padding: 0; /* Removing default padding */
+      margin-top: 0; /* Adjusting margin for visual alignment */
+    }
+
+    /* Style for each list item */
+    #modal-list li {
+      padding: 5px 0; /* Padding for each list item */
+      border-bottom: 1px solid #444; /* Border bottom for a list item */
+    }
+
+    #modal-list li:last-child {
+      border-bottom: none; /* No border for the last list item */
+    }
+
+    .status-banned-temp {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #b09e00, #dac44d); /* Gradient for online status */
+      box-shadow: 0 0 5px #dac44d; /* Glowing effect */
+      text-align: center;
+    }
+
+    .status-banned-perm {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f1623e, #d80707); /* Gradient for online status */
+      box-shadow: 0 0 5px #d80707; /* Glowing effect */
+      text-align: center;
+    }
+    .status-text-temp {
+        background-color: #5f6d21; 
+        border-radius: 3px;
+        font-family: monospace;
+        color: #dac44d; 
+        font-size: 1.2em;
+        padding-top: .25%;
+        padding-bottom: .25%;
+        padding-left: .5%;
+        padding-right: .5%;
+        display: inline-block; 
+        text-align: center;
+    }
+
+    .status-text-perm {
+        background-color: #490d05; 
+        border-radius: 3px;
+        font-family: monospace;
+        color: #d80707;
+        font-size: 1.2em;
+        padding-top: .25%;
+        padding-bottom: .25%;
+        padding-left: .5%;
+        padding-right: .5%;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .username-and-status {
+      text-align: center; /* Center username and status */
+      padding: 0;
+      margin-top: -20px; /* Adjust this value to position the username appropriately */
+    }
+
+    .status {
+      display: flex;
+      justify-content: center; /* Center the status elements horizontally */
+      align-items: center; /* Align the status elements vertically */
+    }
+
+    .status span {
+      display: inline-block; /* Display the status icon inline with text */
+      margin-right: 10px; /* Add some space between the icon and the text */
+    }
+
+    .status p {
+      display: inline-block; /* Display the status text inline with the icon */
+      margin: 0; /* Remove any default margins */
+    }
+    /*--------------------------------------------------------------------------------------------*/
+
+    /* Game Info Style */
+    .game-info-container {
+        display: flex;
+        flex-direction: column;
+        background: #23272A;
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        color: #fff;
+    }
+
+    .game-info-container .basic-info,
+    .game-info-container .stats-info,
+    .game-info-container .ban-info {
+        margin-bottom: 15px;
+    }
+
+    .game-info-container p {
+        margin: 5px 0;
+    }
+
+    .game-info-container span {
+        font-weight: bold;
+    }
+
+    .category-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        padding: 10px;
+        background-color: #333;
+        color: #fff;
+        border-radius: 5px;
+    }
+
+    .category-content {
+        display: none;
+        padding: 10px;
+        background-color: #23272A;
+        color: #fff;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+    .arrow {
+        transition: transform 0.3s ease;
+    }
+
+    .category-content.active + .arrow {
+        transform: rotate(-180deg);
+    }
+
+    /* Seasonal Stats Styling */
+    .seasonal-stats-container {
+        display: flex;
+        flex-direction: column;
+        background: #23272A;
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        color: #fff;
+    }
+
+    .seasonal-stats-container .seasonal-info {
+        margin-bottom: 15px;
+    }
+
+    .seasonal-stats-container p {
+        margin: 5px 0;
+    }
+
+    .seasonal-stats-container span {
+        font-weight: bold;
+    }
+
+    #eloChartImage {
+      width: 50%;
+      height: auto;
+    }
+
+    @media only screen and (max-width: 768px) {
+      body {
+          font-size: 14px; /* Smaller font size */
+      }
+
+      h1 {
+          font-size: 1.5em; /* Larger headers for mobile */
+      }
+
+      .login-container, .dashboard-option, .search-box, .event, .account-details {
+          width: 90%; /* Full width for mobile */
+          margin: 0 auto; /* Center align */
+      }
+
+      nav a, .dashboard-link, .search-button, .button-link, .modal-button {
+          font-size: 1em; /* Larger font for links and buttons */
+          padding: 12px 15px; /* Larger touch targets */
+      }
+
+      /* Adjust navigation for mobile */
+      nav {
+          flex-direction: column;
+      }
+
+      nav .user-info, .nav-links {
+          flex-direction: column;
+          align-items: center; /* Center align items */
+      }
+
+      /* Hide particles on mobile for performance */
+      #particles-js {
+          display: none;
+      }
+
+
+      .search-box {
+          flex-direction: column; /* Stack elements vertically */
+          align-items: center; /* Center elements horizontally */
+          width: 100%; /* Use full width of the container */
+          border-radius: 22px; /* Fully rounded on all sides */
+      }
+
+      .search-input,
+      .search-button {
+          width: 80%; /* Set a width less than 100% to allow for margins */
+          margin: 0 auto 10px auto; /* Centers the element with auto margins and adds space between elements */
+          border-radius: 22px; /* Fully rounded on all sides */
+      }
+
+      /* If you have a specific container around the search elements, you can apply these styles to it instead */
+      .account-details {
+          display: none;
+          flex-direction: column;
+          align-items: center;
+      }
+
+      .modal-content {
+          width: 75%; /* Make modal narrower on mobile */
+          margin: 10% auto; /* Increase top margin to push it down slightly */
+      }
+
+      .buttons-container {
+          flex-direction: column; /* Stack buttons vertically */
+          align-items: center; /* Center buttons */
+          margin: 10px 0; /* Add vertical space between buttons */
+      }
+
+      .modal-button {
+          width: 100%; /* Full width buttons in modal */
+          margin-bottom: 10px; /* Space between buttons */
+      }
+
+      .modal-button:last-child {
+          margin-bottom: 0; /* No margin for the last button */
+      }
+
+      /* Ensure account details and button container are displayed on screen */
+      .account-details, .buttons-container {
+          width: 90%; /* Adjust width */
+          margin: 0 auto; /* Centering it */
+          max-height: 50vh; /* Limit the height to half of the viewport */
+          overflow-y: auto; /* Allow scrolling within the container if content overflows */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <span class="event-viewer">Account Lookup</span>
+    <a href="/dashboard" class="dashboard-link">Dashboard</a>
+  </nav>
+
+  <div class="content">
+    <div class="search-box">
+      <input type="text" class="search-input" placeholder="Enter IGN" />
+      <button class="search-button">Search</button>
+    </div>
+
+    <!-- Container for displaying account details -->
+    <div class="account-details"></div>
+  </div>
+
+  <div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modal-title"></h2>
+        <ul id="modal-list"></ul>
+    </div>
+  </div>
+
+
+  <div id="particles-js" class="particles"></div>
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui/1.12.1/jquery-ui.min.js"></script>
+  <script src="./handlers/lookupAccountHandler.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+      particlesJS("particles-js", {
+          particles: {
+              number: { value: 80, density: { enable: true, value_area: 800 } },
+              color: { value: ["#e74c3c", "#3498db", "#2ecc71", "#e67e22", "#9b59b6"] },
+              shape: { type: ["circle", "triangle", "polygon", "star", "edge"], stroke: { width: 0, color: "#000000" }, polygon: { nb_sides: 5 } },
+              opacity: { value: 0.5, random: false, anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false } },
+              size: { value: 3, random: true, anim: { enable: true, speed: 3, size_min: 0.1, sync: false } },
+              line_linked: { enable: true, distance: 150, color: "#e74c3c", opacity: 0.4, width: 1 },
+              move: { enable: true, speed: 6, direction: "none", random: false, straight: false, out_mode: "out", bounce: false, attract: { enable: false, rotateX: 600, rotateY: 1200 } }
+          },
+          interactivity: {
+              detect_on: "canvas",
+              events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }, resize: true },
+              modes: { grab: { distance: 400, line_linked: { opacity: 1 } }, bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 }, repulse: { distance: 200, duration: 0.4 }, push: { particles_nb: 4 }, remove: { particles_nb: 2 } }
+          },
+          retina_detect: true
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+[
+    {
+        "0": {
+                "0": "Permanent-Broken Terms of Service/Code of Conduct",
+                "1": "Permanent-Fraud",
+                "2": "Permanent-Cheating",
+                "3": "Permanent-Griefing",
+                "4": "Permanent-Toxicity",
+                "5": "Permanent-Idle/AFK",
+                "6": "Permanent-Communication Abuse",
+                "7": "Permanent-Report Abuse",
+                "8": "Permanent-Account Sharing",
+                "9": "Permanent-Exploit Abuse",
+                "10": "Permanent-Ghosting",
+                "11": "Permanent-Partying with Cheater"
+        },
+        "1": {
+                "0": "Temporary-Broken Terms of Service/Code of Conduct",
+                "1": "Temporary-Fraud",
+                "2": "Temporary-Cheating",
+                "3": "Temporary-Griefing",
+                "4": "Temporary-Toxicity",
+                "5": "Temporary-Idle/AFK",
+                "6": "Temporary-Communication Abuse",
+                "7": "Temporary-Report Abuse",
+                "8": "Temporary-Account Sharing",
+                "9": "Temporary-Exploit Abuse",
+                "10": "Temporary-Ghosting",
+                "11": "Temporary-Parting with Cheater"
+        }
+    }
+]

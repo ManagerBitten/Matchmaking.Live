@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= ticketName %></title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #36393f;
+            color: #dcddde;
+            font-family: "Whitney", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 17px;
+        }
+        #header {
+            color: #dcddde; 
+            padding: 10px;
+            font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            padding-bottom: 50px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+        }
+
+        #logo {
+            width: 100px; 
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 5px; 
+        }
+
+        .text-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h1 {
+            font-size: 20px; 
+            margin: 0;
+        }
+
+        .chat-container {
+            padding-left: 20px;
+            padding-right: 1rem;
+        }
+        .message-group {
+            display: flex;
+            padding: 2px 0;
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #2f3136;
+            margin-right: 16px;
+            background-size: cover;
+        }
+        .message-content {
+            max-width: calc(100% - 60px);
+            padding-bottom: 20px;
+        }
+        .message-header {
+            display: flex;
+            align-items: center;
+        }
+        .username {
+            font-weight: 500;
+            color: #ffffff;
+        }
+        .timestamp {
+            font-size: 12px;
+            color: #72767d;
+            margin-left: 8px;
+        }
+        .message-text {
+            color: #dcddde;
+            margin-top: 2px;
+        }
+        .mention {
+            background-color: rgba(114, 137, 218, 0.1); 
+            color: #7289da;
+            border-radius: 3px;
+            padding: 0 4px;
+        }
+        .embed-container {
+            position: relative; 
+            background-color: #2f3136;
+            border-radius: 4px;
+            border-left: 4px solid #7289da; 
+            padding: 15px; 
+            max-width: 400px;
+            margin: 0px;
+        }
+        .embed-author {
+            display: flex;
+            align-items: center;
+        }
+        .embed-author-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 5px;
+            background-size: cover;
+        }
+        .embed-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #00b0f4; 
+            margin-top: 5px;
+        }
+        .embed-description {
+            font-size: 14px;
+            color: #dcddde;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+        .embed-thumbnail {
+            position: absolute; 
+            top: 15px; 
+            right: 15px; 
+            width: 50px; 
+            height: 50px; 
+            border-radius: 3px;
+        }
+        .embed-fields {
+            clear: both;
+            margin-top: 10px;
+        }
+        .embed-field {
+            margin-bottom: 25px;
+        }
+        .embed-field-title {
+            font-weight: 600;
+        }
+        .embed-field-value {
+            font-size: 14px;
+        }
+        .embed-field-inline {
+            display: inline-block;
+            width: 30%;
+            margin-right: 5%;
+        }
+        .embed-field-inline:last-child {
+            margin-right: 0;
+        }
+        .embed-footer {
+            display: flex;
+            align-items: center;
+            font-size: 11px;
+            color: #dcddde;
+            padding-top: 5px; 
+            font-weight: bold;
+        }
+        
+        .embed-footer-text {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            font-weight: bold;
+        }
+        
+        .embed-footer-text::after {
+            content: '•'; 
+            margin: 0 6px; 
+            color: #dcddde;
+            font-weight: bold;
+        }
+        
+        .embed-footer-timestamp {
+            white-space: nowrap;
+            font-weight: bold;
+        }
+        .embed-footer-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+
+        /* General styles for the attachment container */
+        .attachment-container {
+            margin-top: 10px; /* Add space between messages and attachments */
+            margin-bottom: 10px; /* Space after the attachment before the next message or attachment */
+            background-color: #2f3136; /* Slightly darker than the chat background for emphasis */
+            padding: 10px; /* Padding around the content */
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+            max-width: 80%; /* Maximum width of attachments */
+            margin-left: auto; /* Aligns the container to the right */
+            margin-right: 20px; /* Consistent spacing from the right edge */
+        }
+
+        /* Styles specific to images within attachments */
+        .message-image {
+            display: block; /* Ensures it takes up the whole line */
+            max-width: 100%; /* Ensures the image does not overflow its container */
+            height: auto; /* Maintains aspect ratio */
+            border-radius: 4px; /* Slightly rounded corners for the image */
+        }
+
+        /* Styles specific to videos within attachments */
+        .message-video {
+            display: block; /* Ensures it takes up the whole line */
+            width: 100%; /* Full width of the container */
+            max-height: 300px; /* Maximum height for the video player */
+            border-radius: 4px; /* Slightly rounded corners for the video */
+        }
+
+        .embed-image {
+            width: 300px;
+            height: 300px;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 0.8rem;
+            }
+            
+            .chat-container {
+                padding-left: 10px;
+            }
+        }
+
+        .button-link {
+            background-color: #ff5555;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+            text-decoration: none;
+            display: inline-block; /* To allow padding and other spacing properties */
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .button-link:hover {
+            background-color: #cc0000;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <div class="header-content">
+            <img src="" id="logo" alt="Server Logo">
+            <div class="text-content">
+                <h1 id="serverName"></h1>
+                <h1 id="channelName"></h1>
+                <h1 id="messageCount"></h1>
+            </div>
+        </div>
+        <a href="/dashboard" class="button-link">Dashboard</a>
+    </div>
+    <div class="chat-container" id="chatContainer"></div>
+
+    <script nonce="8+JPzd3fbyhtGSMXa+SvyA==">
+        let ticket = JSON.parse(`<%= ticketData %>`);
+        let guild = JSON.parse(`<%= guild %>`);
+        let messageCount = `<%= messageCount %>`;
+        let channel = `<%= ticketName %>`;
+        const chatContainer = document.getElementById('chatContainer');
+        let lastAuthor = null;
+
+        document.getElementById('serverName').textContent = guild.name;
+        document.getElementById('channelName').textContent = channel;
+        document.getElementById('messageCount').textContent = messageCount + ' messages'; 
+        document.getElementById('logo').src = guild.icon;
+
+        // Function to create and append each message to the chat container
+        ticket.forEach(message => {
+            let messageGroup;
+            let messageContent;
+            if (message.author !== lastAuthor) {
+                // If the message is from a new author, create a new message group
+                messageGroup = document.createElement('div');
+                messageGroup.className = 'message-group';
+
+                const avatar = document.createElement('div');
+                avatar.className = 'avatar';
+                avatar.style.backgroundImage = `url('${message.avatarUrl}')`;
+                messageGroup.appendChild(avatar);
+
+                messageContent = document.createElement('div');
+                messageContent.className = 'message-content';
+
+                const messageHeader = document.createElement('div');
+                messageHeader.className = 'message-header';
+
+                const username = document.createElement('span');
+                username.className = 'username';
+                username.textContent = message.author;
+
+                const timestamp = document.createElement('span');
+                timestamp.className = 'timestamp';
+                timestamp.textContent = message.timestamp;
+
+                messageHeader.appendChild(username);
+                messageHeader.appendChild(timestamp);
+                messageContent.appendChild(messageHeader);
+                messageGroup.appendChild(messageContent);
+                chatContainer.appendChild(messageGroup);
+
+                lastAuthor = message.author; // Update lastAuthor to current author
+            } else {
+                // If the message is from the same author, use the last message group and add new message content
+                messageGroup = chatContainer.lastChild;
+                messageContent = messageGroup.lastChild;
+            }
+
+            // Create the actual message text element
+            const messageText = document.createElement('div');
+            messageText.className = 'message-text';
+            messageText.innerHTML = message.content;
+            messageContent.appendChild(messageText);
+
+            message.attachments.forEach((attachment) => {
+                const attachmentContainer = document.createElement('div');
+                attachmentContainer.className = 'attachment-container';
+
+                if (attachment.startsWith('IMG')) {
+                    const image = new Image();
+                    image.src = attachment.url;
+                    image.className = 'message-image';
+                    attachmentContainer.appendChild(image);
+                } else if (attachment.startsWith('VID')) {
+                    const video = document.createElement('video');
+                    video.src = attachment.url;
+                    video.className = 'message-video';
+                    video.controls = true;
+                    attachmentContainer.appendChild(video);
+                }
+
+                chatContainer.appendChild(attachmentContainer);
+            }); 
+
+            // Process embeds if any
+            message.embeds.forEach(embed => {
+                const embedContainer = document.createElement('div');
+                embedContainer.className = 'embed-container';
+                
+                if (embed.color) {
+                    embedContainer.style.borderLeftColor = decimalToHexColor(embed.color);
+                }
+
+                // Create elements for title, description, images, etc.
+                const title = document.createElement('div');
+                title.className = 'embed-title';
+                title.textContent = embed.title;
+
+                const description = document.createElement('div');
+                description.className = 'embed-description';
+                description.innerHTML = embed.description;
+
+                embedContainer.appendChild(title);
+                embedContainer.appendChild(description);
+                if (embed.authorIcon) {
+                    const authorIcon = document.createElement('img');
+                    authorIcon.src = embed.authorIcon;
+                    authorIcon.className = 'embed-author-icon';
+                    embedContainer.appendChild(authorIcon);
+                }
+
+                if (embed.author) {
+                    const author = document.createElement('div');
+                    author.className = 'embed-author';
+                    author.textContent = embed.author;
+                    embedContainer.appendChild(author);
+                }
+
+                if (embed.thumbnail) {
+                    const thumbnail = document.createElement('img');
+                    thumbnail.className = 'embed-thumbnail';
+                    thumbnail.src = embed.thumbnail;
+                    embedContainer.appendChild(thumbnail);
+                }
+
+                if (embed.image) {
+                    const image = document.createElement('img');
+                    image.className = 'embed-image';
+                    image.src = embed.image;
+                    embedContainer.appendChild(image);
+                }
+
+                if (embed.fields) {
+                    const embedFields = document.createElement('div');
+                    embedFields.className = 'embed-fields';
+                    embed.fields.forEach(field => {
+                    const fieldElement = document.createElement('div');
+                    fieldElement.className = field.inline ? 'embed-field-inline' : 'embed-field';
+                    const fieldTitle = document.createElement('div');
+                    fieldTitle.className = 'embed-field-title';
+                    fieldTitle.textContent = field.name;
+                    const fieldValue = document.createElement('div');
+                    fieldValue.className = 'embed-field-value';
+                    fieldValue.textContent = field.value;
+                    fieldElement.appendChild(fieldTitle);
+                    fieldElement.appendChild(fieldValue);
+                    embedFields.appendChild(fieldElement);
+                    });
+                    embedContainer.appendChild(embedFields);
+                }
+
+                if (embed.footer) {
+                    const footer = document.createElement('div');
+                    footer.className = 'embed-footer';
+                    if (embed.footerIcon) {
+                        const footerIcon = document.createElement('img');
+                        footerIcon.src = embed.footerIcon;
+                        footerIcon.className = 'embed-footer-icon';
+                        footer.appendChild(footerIcon);
+                    }
+                    const footerText = document.createElement('div');
+                    footerText.className = 'embed-footer-text';
+                    footerText.textContent = embed.footer;
+                    footer.appendChild(footerText);
+
+                    if (embed.timestamp) {
+                        const footerTimestamp = document.createElement('div');
+                        footerTimestamp.className = 'embed-footer-timestamp';
+                        footerTimestamp.textContent = new Date(embed.timestamp).toLocaleDateString("en-US");
+                        footer.appendChild(footerTimestamp);
+                    }
+                    embedContainer.appendChild(footer);
+                }
+
+                messageContent.appendChild(embedContainer);
+            });
+
+            messageGroup.appendChild(messageContent);
+            chatContainer.appendChild(messageGroup);
+        });
+
+        function decimalToHexColor(decimalColor) {
+            let hexColor = decimalColor.toString(16);
+            return '#' + hexColor.padStart(6, '0');
+        }
+    </script>
+</body>
+</html>

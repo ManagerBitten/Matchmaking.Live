@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Viewer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    nav {
+      background-color: #333;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav .event-viewer {
+      color: #e74c3c;
+      font-weight: bold;
+      font-size: 24px;
+    }
+
+    nav .dashboard-link {
+      color: #fff;
+      font-weight: bold;
+      font-size: 18px;
+      text-decoration: none;
+      transition: color 0.3s ease-in-out;
+    }
+
+    nav .dashboard-link:hover {
+      color: #e74c3c;
+    }
+
+    .content {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search-box {
+      display: flex;
+      margin-top: 20px; /* Space above the search box */
+    }
+
+    .search-input {
+      padding: 0 20px;
+      font-size: 16px;
+      border: 2px solid #555; /* Added border to match button's visual height */
+      outline: none;
+      background-color: #222;
+      color: #fff;
+      border-radius: 22px 0 0 22px; /* Slightly less rounded to accommodate border */
+      height: 40px; /* Adjusted height */
+      border-right: none; /* Seamless transition to button */
+    }
+
+    .search-button {
+      padding: 0 20px;
+      background-color: #e74c3c;
+      color: #fff;
+      border: 2px solid #555; /* Same border as input for consistent appearance */
+      outline: none;
+      cursor: pointer;
+      border-radius: 0 22px 22px 0; /* Matching border-radius with the input */
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+      height: 44px; /* 40px height + 2px border top + 2px border bottom */
+      box-shadow: none; /* Removed shadow for flat design */
+      border-left: none; /* Seamless transition from input */
+    }
+
+    /* Styles for the events container */
+    .events-container {
+      display: none;
+      background-color: #333;
+      width: calc(30% - 40px);
+      max-height: 300px;
+      overflow-y: auto;
+      border-radius: 5px;
+      overflow-y: scroll;
+      padding: 15px;
+      margin-top: 20px; /* Adjust this value as needed to push the container down */
+      box-sizing: border-box;
+    }
+
+    /* Hide scrollbar for Firefox */
+    .events-container::-webkit-scrollbar {
+      width: 0;
+    }
+
+    /* Hide scrollbar for IE, Edge, and Safari */
+    .events-container {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    }
+
+    /* Optional: Add custom styling to the scrollbar track and thumb */
+    .events-container::-webkit-scrollbar-track {
+      background: transparent;  /* Optional: Change scrollbar track color */
+    }
+
+    .events-container::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0);  /* Optional: Change scrollbar thumb color */
+    }
+
+    /* Styles for individual event entries */
+    .event {
+      background-color: #222;
+      color: #fff;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    /* Styles for the 'No results found' message */
+    .no-results {
+      color: #e74c3c;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .search-button:hover {
+      background-color: #c0392b;
+    }
+
+    /* Particles.js container */
+    #particles-js {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    @media only screen and (max-width: 768px) {
+      .event-viewer {
+          font-size: 1.8em; /* Larger text for the title on mobile */
+      }
+
+      .dashboard-link {
+          font-size: 1.2em; /* Larger links for easier touch */
+          padding: 10px; /* Padding for larger touch area */
+      }
+
+      .search-box {
+          flex-direction: column; /* Stack search input and button on mobile */
+          width: 100%; /* Full width */
+          align-items: center; /* Center align the stacked elements */
+          border-radius: 22px; /* Fully rounded on all sides */
+      }
+
+      .search-input {
+          width: 85%; /* Full width for mobile */
+          margin-bottom: 10px; /* Space between input and button */
+          height: 50px; /* Larger input for easier touch */
+          font-size: 1em; /* Larger font size for readability */
+          border-radius: 22px; /* Fully rounded on all sides */
+      }
+
+      .search-button {
+          width: 90%; /* Full width for mobile */
+          height: 50px; /* Larger button for easier touch */
+          font-size: 1em; /* Larger font size for readability */
+          border-radius: 22px; /* Fully rounded on all sides */
+      }
+
+      .events-container {
+        display: none;
+          width: 90%; /* Full width for mobile */
+          margin: 10px auto; /* Space above and below for readability */
+      }
+
+      .event {
+          font-size: 0.9em; /* Adjust font size for readability */
+          padding: 15px; /* More padding for touch friendliness */
+      }
+
+      /* Since you have the particles-js library, it's better to disable it on mobile for performance */
+      #particles-js {
+          display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <span class="event-viewer">Event Viewer</span>
+    <a href="/dashboard" class="dashboard-link">Dashboard</a>
+  </nav>
+
+  <div class="content">
+    <div class="search-box">
+      <input type="text" class="search-input" placeholder="Enter search term" />
+      <button class="search-button">Search</button>
+    </div>
+
+    <div class="events-container">
+        <div class="no-results" style="display: none;">⛔ No results found.</div>
+      </div>
+  </div>
+
+  <div id="particles-js" class="particles"></div>
+  <div class="gradient-overlay"></div>
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script>
+      particlesJS("particles-js", {
+          particles: {
+              number: { value: 80, density: { enable: true, value_area: 800 } },
+              color: { value: ["#e74c3c", "#3498db", "#2ecc71", "#e67e22", "#9b59b6"] },
+              shape: { type: ["circle", "triangle", "polygon", "star", "edge"], stroke: { width: 0, color: "#000000" }, polygon: { nb_sides: 5 } },
+              opacity: { value: 0.5, random: false, anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false } },
+              size: { value: 3, random: true, anim: { enable: true, speed: 3, size_min: 0.1, sync: false } },
+              line_linked: { enable: true, distance: 150, color: "#e74c3c", opacity: 0.4, width: 1 },
+              move: { enable: true, speed: 6, direction: "none", random: false, straight: false, out_mode: "out", bounce: false, attract: { enable: false, rotateX: 600, rotateY: 1200 } }
+          },
+          interactivity: {
+              detect_on: "canvas",
+              events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }, resize: true },
+              modes: { grab: { distance: 400, line_linked: { opacity: 1 } }, bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 }, repulse: { distance: 200, duration: 0.4 }, push: { particles_nb: 4 }, remove: { particles_nb: 2 } }
+          },
+          retina_detect: true
+      });
+  </script>
+  <script src="./handlers/eventSearchHandler.js"></script>
+</body>
+</html>
