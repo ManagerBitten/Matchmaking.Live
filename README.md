@@ -12,6 +12,7 @@ Matchmaking.Live is a comprehensive application designed for event management an
 - [Middleware](#middleware)
 - [Utilities](#utilities)
 - [Public Files](#public-files)
+- [Environment Variables](#environment-variables)
 - [License](#license)
 
 ## Installation
@@ -148,6 +149,19 @@ The `public` directory contains static files served by the application:
 - Fonts used in the application.
 - Handlers for event search and account lookup.
 - Images and JSON configurations.
+
+## Environment Variables
+The application requires several environment variables to be set. These variables are defined in the `test.env` file which will need to be renamed to just `.env`. Below is an explanation of each variable:
+
+- **PORT**: The port on which your application will run. Default is `3000`.
+- **MONGO_URI**: The URI connection string for your MongoDB database. Replace `<YOUR_MONGO_URI>` with your actual MongoDB URI.
+- **JWT_SECRET**: A secret key used for signing JSON Web Tokens (JWT). Replace `<YOUR_JWT_SECRET(random string)>` with a random string.
+- **DISCORD_CLIENT_ID**: The client ID for your Discord application. Replace `<YOUR_CLIENT_ID>` with your actual Discord client ID.
+- **DISCORD_CLIENT_SECRET**: The client secret for your Discord application. Replace `<YOUR_CLIENT_SECRET>` with your actual Discord client secret.
+- **DISCORD_CALLBACK_URL**: The callback URL for Discord authentication. Default is `http://localhost:3000/api/discord`.
+- **SESSION_SECRET**: A secret key used for session management. Replace `<YOUR_SESSION_SECRET(same as client secret)>` with a secret key, which can be the same as your Discord client secret.
+- **SECRET_TOKEN**: Another secret token used for additional security. Replace `<YOUR_SECRET_TOKEN(random string)>` with a random string.
+
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
