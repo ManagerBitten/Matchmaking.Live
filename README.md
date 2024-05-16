@@ -3,7 +3,6 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg">
-  <img src="https://github.com/your-username/matchmaking.live/workflows/Node.js%20CI/badge.svg">
   <img src="https://img.shields.io/badge/version-1.0.0-blue.svg">
 </p>
 
