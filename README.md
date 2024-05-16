@@ -1,7 +1,7 @@
 # Matchmaking.Live
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Node.js CI](https://github.com/your-username/matchmaking.live/workflows/Node.js%20CI/badge.svg)
+![Node.js CI](https://github.com/ManagerBitten/matchmaking.live/workflows/Node.js%20CI/badge.svg)
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 
 ## Overview
