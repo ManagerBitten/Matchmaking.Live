@@ -47,14 +47,11 @@ The main components of the project are structured as follows:
 
 ```
 matchmaking.live/
-├── .env
 ├── adminRoutes.js
 ├── apiRoutes.js
 ├── mainRoutes.js
-├── nginx.conf
 ├── package.json
 ├── package-lock.json
-├── README.md
 ├── server.js
 ├── test.env
 ├── config/
